@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy as sp
+import sklearn
+from pandas.plotting import scatter_matrix as sm
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.linear_model import LogisticRegression as lr
+from sklearn.tree import DecisionTreeClassifier as dtc
+from sklearn.neighbors import KNeighborsClassifier as knc
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as lda
+from sklearn.naive_bayes import GaussianNB as gnb
+from sklearn.svm import SVC as svc
+from sklearn import preprocessing #additional
+
+
+iris = pd.read_csv('IRIS.csv')
+
+array = iris.values
+x = array[:,0:4]
+y= array[:,4]
+seed = 6
+
+xtrain, xtest, ytrain, ytest = train_test_split(x,y, test_size = 0.2)
+xscaled = preprocessing.scale(xtrain) #additional
+models = [('LR', lr()),
+       ('LDA', lda()),
+       ('KNN', knc()),
+       ('DTC', dtc()),
+      ('GNB', gnb()),
+      ('SVM', svc())]
+results = []
+names = []
+for name, model in models:
+    kfold = KFold(n_splits = 10, random_state = 6, shuffle = True)
+    cv_results = cross_val_score(model, xscaled , ytrain, cv = kfold, scoring = 'accuracy')
+    results.append(cv_results)
+    names.append(name)
+    msg = "%s:, %f (%f)" % (name, cv_results.mean(), cv_results.std())
+    print(msg)
