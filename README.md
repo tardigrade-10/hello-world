@@ -1,4 +1,4 @@
 # hello-world
 
-Hello folks,
-I am Yash, living on earth, learning science,  loving space, having fun 
+Hello world is a place where different ml projects notebooks are uploaded.
+
